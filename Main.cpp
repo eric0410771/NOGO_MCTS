@@ -50,7 +50,7 @@ MCTStree tree;
 int main(int argc, char** argv)
 {
 	int i,k;
-	int simulationCnt=50000;
+	int simulationCnt=100000;
 	double t;
 	string s,c,p;
 	t=10000;
@@ -67,6 +67,7 @@ int main(int argc, char** argv)
 	vector<float> policy;
 	float value;
 	//freopen("0016086.txt","w",stdout);
+	
 	while(cin>>s)
 	{
 		if(s=="play"||s=="p")
@@ -74,6 +75,7 @@ int main(int argc, char** argv)
 			cin>>c>>p;
 			if(c[0]=='b' || c[0]=='B')j=0;
 			else j=1;
+			
 			b.add(GTPstringtoint(p),j);
 			cout<<"="<<endl<<endl;
 		}

@@ -19,18 +19,18 @@ ucbnode::~ucbnode()
 }
 
 
-void ucbnode::init_node(int i,bool j)
+void ucbnode::init_node(int i,bool j, double r_mean, double r_count)
 {
-    player=j;
-    place=i;
-
-    mean = 0.5;
-    count = initial_v;
-    num_child=0;
-    
-    memset(legal_action,-1,sizeof(legal_action));
-    childptrs=NULL;
-    logc=1;
+    	player=j;
+    	place=i;
+    	mean = 0.5;
+    	count = initial_v;
+	rave_mean = r_mean;
+	rave_count = r_count;
+    	num_child=0;
+    	memset(legal_action,-1,sizeof(legal_action));
+    	childptrs=NULL;
+    	logc=1;
 }
 
 void ucbnode::update_node(double result)
@@ -42,8 +42,17 @@ void ucbnode::update_node(double result)
     {
         mean = (mean*count)/(count+1);
     }
-    count+=1;
+    count += 1;
     setlogc();
+}
+
+void ucbnode::update_rave(double result){
+	if ((result > 0 && player==BLACK)||(result < 0 && player == WHITE)){
+		rave_mean = (rave_mean * rave_count + 1)/(rave_count + 1);
+	}else{
+		rave_mean = (rave_mean * rave_count)/(rave_count + 1);
+	}
+	rave_count += 1;
 }
 void ucbnode::expansion(board &b)
 {
@@ -87,12 +96,13 @@ void ucbnode::expansion(board &b)
 	if(num_legal_a == 0){
 		return;
 	}else{
+		double tmp_rmean = 0.5;
 		childptrs = new ucbnode[num_legal_a];
 		for(int i = 0;i<BOARDSSIZE; i++){
 			if(b.check(i, next_player)){
 				num_legal_a --;
 				legal_action[i] = num_legal_a;
-				childptrs[num_legal_a].init_node(i, next_player);
+				childptrs[num_legal_a].init_node(i, next_player, initial_rave_v, tmp_rmean);
 			}
 		}
 		
@@ -106,6 +116,7 @@ int ucbnode::get_best_child_index()
 	double tmp_count = -1;
 	for(int i = 0;i<num_child;i++)
 	{
+		/*
 		if(tmp_winrate < childptrs[i].mean || tmp_count < childptrs[i].count)
 		{
 			if(tmp_count *0.9 < childptrs[i].count)
@@ -114,6 +125,11 @@ int ucbnode::get_best_child_index()
 				tmp_count = childptrs[i].count;
 				child_index = i;
 			}
+		}
+		*/
+		if(childptrs[i].count > tmp_count){
+			tmp_count = childptrs[i].count;
+			child_index = i;
 		}	
 	}
 

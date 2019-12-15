@@ -1,23 +1,24 @@
 #ifndef MCTS_H
 #define MCTS_H
 #include "ucbnode.h"
-#define raveb 0.0001
+
 class MCTStree
 {
 public:
 	int selectlist[BOARDSSIZE];
 	int slsize;
 	int bsize,wsize,tsize;
-	int bone[BOARDSSIZE],wone[BOARDSSIZE],two[BOARDSSIZE];
+	int bone[BOARDSSIZE],wone[BOARDSSIZE],two[BOARDSSIZE];	
 	int sbnum,swnum;//select num
 	int total;
 	int totalnode;
+	vector<ucbnode*> path;
 
 	ucbnode* root;
 	board rboard;
     	MCTStree();
     	~MCTStree();
-    	vector<ucbnode*> path;
+    	
 	
 
         double getvalue( ucbnode* nodeptr, int child_index);
@@ -28,6 +29,9 @@ public:
         void reset(board &b);
         void clear();
 	void show_path();
+	
+	void init_ravetable();
+	
         string inttostring(int i);
         string inttoGTPstring(int i);
 };
