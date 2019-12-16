@@ -50,7 +50,9 @@ MCTStree tree;
 int main(int argc, char** argv)
 {
 	int i,k;
-	int simulationCnt=100000;
+  int action1 = -1;
+  int action2 = -1;
+	int simulationCnt = 100000;
 	double t;
 	string s,c,p;
 	t=10000;
@@ -78,6 +80,13 @@ int main(int argc, char** argv)
 			
 			b.add(GTPstringtoint(p),j);
 			cout<<"="<<endl<<endl;
+      if(action1 == -1){
+        action1 = GTPstringtoint(p);
+      }else{
+        action2 = action1;
+        action1 = GTPstringtoint(p);
+      }
+      
 		}
 		else if(s[0]=='e')
 		{
@@ -85,6 +94,8 @@ int main(int argc, char** argv)
 		}
 		else if(s[0]=='c')
 		{
+      action1 = -1;
+      action2 = -1;
 			b.clear();
 			cout<<"="<<endl<<endl;
 		}else if(s[0]=='g' || s == "reg_genmove")
@@ -103,10 +114,12 @@ int main(int argc, char** argv)
 			}
 			if(!f)
 			{
+        action1 = -1;
+        action2 = -1;
 				cout<<"=resign"<<endl<<endl;
 				continue;
 			}
-			tree.reset(b);
+			tree.reset(b, action1, action2);
 			e = st = clock();
 			int simulationFinishedCnt = 0;
 			//while(e-st<t)
@@ -149,8 +162,13 @@ int main(int argc, char** argv)
 			{
 				cout<<"=resign"<<endl<<endl;
 			}
-			
-			tree.clear();
+			if(action1 == -1){
+        action1 = best_move;
+      }else{
+        action2 = action1;
+        action1 = best_move;
+      }
+			//tree.clear();
 
 		}
 		else if (s == "policy")

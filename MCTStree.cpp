@@ -179,48 +179,61 @@ void MCTStree::run_a_cycle()
 	update(result,b);
 }
 
-void MCTStree::reset(board &b)
+void MCTStree::reset(board &b, int action1, int action2)
 {
-
-	/*bool get_simulated = false;
-	if(action1 != -1 && action2 != -1 && root != NULL){	
+	bool get_simulated = false;
+	vector<double> child_mean;
+  vector<double> child_count;
+  ucbnode* tmp_root = root;
+  if(action1 != -1 && action2 != -1 && root != NULL){	
 		int child_index = -1;
-		ucbnode* tmp = root;
-		for(int index = 0;index < root->num_child;index++){
-			if(int(((root->childptrs)+index)->place) == action2){
+		cout<<tmp_root->num_child<<endl;
+		for(int index = 0;index < tmp_root->num_child;index++){
+			if(int(((tmp_root->childptrs)+index)->place) == action2){
 				child_index = index;
-			}
+      }
 		}
 
 		if(child_index != -1 && ((root->childptrs)+child_index) != NULL){
-			root = (root->childptrs) + child_index;
-		}
+			tmp_root = (tmp_root->childptrs) + child_index;
+      cout<<tmp_root->num_child<<endl;
+		}else{
+      cout<<"Not Find"<<endl;
+    }
 
 		child_index = -1;
-		for(int index = 0;index < root->num_child;index++){
-			if(int(((root->childptrs)+index)->place) == action1){
+		for(int index = 0;index < tmp_root->num_child;index++){
+			if(int(((tmp_root->childptrs)+index)->place) == action1){
 				child_index = index;
 			}
 		}
-
-		if(child_index != -1&&((root->childptrs) + child_index) != NULL){
-			root = (root->childptrs) + child_index;
-			get_simulated = true;
+		if(child_index != -1&&((tmp_root->childptrs) + child_index) != NULL){ 
+      tmp_root = (tmp_root->childptrs) + child_index;
+      for(int i = 0; i<tmp_root->num_child; i++){
+        child_mean.push_back((tmp_root->childptrs+i)->mean);
+        child_count.push_back((tmp_root->childptrs+i)->count);
+      }
 		}
-		//delete tmp;
-	}*/
+	}
+  delete root;
 	rboard=b;
-		
 	root = new ucbnode;		
 	root -> player = rboard.just_play_color();
 		
 	root -> place = 81;
-	root -> count = initial_v;
-	root -> logc = 1;
-	memset(root -> legal_action,-1,sizeof(root -> legal_action)  );
-	root -> expansion(b);
+  root -> count = initial_v;
+  root -> logc = 1;
+  memset(root -> legal_action,-1,sizeof(root -> legal_action)  );
+  root -> expansion(b);
+  for(int i = 0;i<child_mean.size(); i++){
+    (root->childptrs+i)->mean = child_mean[i];
+    (root->childptrs+i)->count = child_count[i];
+  }
+  cout<<child_mean.size()<<endl;
+  cout<<root->num_child<<endl;
 	total = 0;
 	totalnode = 0;
+   cout<<"over"<<endl;
 
 }
 

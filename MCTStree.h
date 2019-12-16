@@ -19,14 +19,12 @@ public:
     	MCTStree();
     	~MCTStree();
     	
-	
-
         double getvalue( ucbnode* nodeptr, int child_index);
         ucbnode* get_best_child(ucbnode* nodeptr);
         void select(board &b);
         void update(double result,board& b);
         void run_a_cycle();
-        void reset(board &b);
+        void reset(board &b, int action1, int action2);
         void clear();
 	void show_path();
 	

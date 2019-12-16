@@ -1,1 +1,0 @@
-/usr/bin/c++   -std=c++11 -Wall -O3   CMakeFiles/hahanogo.dir/Main.cpp.o CMakeFiles/hahanogo.dir/ucbnode.cpp.o CMakeFiles/hahanogo.dir/board.cpp.o CMakeFiles/hahanogo.dir/MCTStree.cpp.o  -o hahanogo -rdynamic 
