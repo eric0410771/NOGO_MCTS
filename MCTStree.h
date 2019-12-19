@@ -1,37 +1,32 @@
 #ifndef MCTS_H
 #define MCTS_H
 #include "ucbnode.h"
-
 class MCTStree
 {
 public:
-	int selectlist[BOARDSSIZE];
-	int slsize;
-	int bsize,wsize,tsize;
-	int bone[BOARDSSIZE],wone[BOARDSSIZE],two[BOARDSSIZE];	
-	int sbnum,swnum;//select num
-	int total;
-	int totalnode;
-	vector<ucbnode*> path;
-
+	int prior_child[BOARDSSIZE];
+	int num_prior;
 	ucbnode* root;
 	board rboard;
-    	MCTStree();
-    	~MCTStree();
-    	
+        
+        vector<ucbnode*> path;
+	int bsize,wsize,tsize;
+	int bone[BOARDSSIZE],wone[BOARDSSIZE],two[BOARDSSIZE];
+	int totalnode;
+
+        MCTStree();
         double getvalue( ucbnode* nodeptr, int child_index);
         ucbnode* get_best_child(ucbnode* nodeptr);
-        void select(board &b);
+    
+	void select(board &b);
         void update(double result,board& b);
         void run_a_cycle();
-        void reset(board &b, int action1, int action2);
+        void reset(board &b);
         void clear();
 	void show_path();
-	
-	void init_ravetable();
-	
         string inttostring(int i);
         string inttoGTPstring(int i);
+        ~MCTStree();
 };
 
 

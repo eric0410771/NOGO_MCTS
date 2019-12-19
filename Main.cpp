@@ -50,9 +50,7 @@ MCTStree tree;
 int main(int argc, char** argv)
 {
 	int i,k;
-  int action1 = -1;
-  int action2 = -1;
-	int simulationCnt = 100000;
+	int simulationCnt=200000;
 	double t;
 	string s,c,p;
 	t=10000;
@@ -69,7 +67,6 @@ int main(int argc, char** argv)
 	vector<float> policy;
 	float value;
 	//freopen("0016086.txt","w",stdout);
-	
 	while(cin>>s)
 	{
 		if(s=="play"||s=="p")
@@ -77,16 +74,8 @@ int main(int argc, char** argv)
 			cin>>c>>p;
 			if(c[0]=='b' || c[0]=='B')j=0;
 			else j=1;
-			
 			b.add(GTPstringtoint(p),j);
 			cout<<"="<<endl<<endl;
-      if(action1 == -1){
-        action1 = GTPstringtoint(p);
-      }else{
-        action2 = action1;
-        action1 = GTPstringtoint(p);
-      }
-      
 		}
 		else if(s[0]=='e')
 		{
@@ -94,8 +83,6 @@ int main(int argc, char** argv)
 		}
 		else if(s[0]=='c')
 		{
-      action1 = -1;
-      action2 = -1;
 			b.clear();
 			cout<<"="<<endl<<endl;
 		}else if(s[0]=='g' || s == "reg_genmove")
@@ -103,6 +90,7 @@ int main(int argc, char** argv)
 			bool j,f=false;
 			int st,e;
 			cin>>c;
+
 			j=!b.just_play_color();
 			for(i=0;i<BOARDSSIZE;i++)
 			{
@@ -114,16 +102,15 @@ int main(int argc, char** argv)
 			}
 			if(!f)
 			{
-        action1 = -1;
-        action2 = -1;
 				cout<<"=resign"<<endl<<endl;
 				continue;
 			}
-			tree.reset(b, action1, action2);
+			tree.reset(b);
 			e = st = clock();
 			int simulationFinishedCnt = 0;
 			//while(e-st<t)
-			while(simulationFinishedCnt < simulationCnt)
+
+			while(simulationFinishedCnt < simulationCnt && float(e - st)/float(CLOCKS_PER_SEC) < 0.85)
 			{
 				tree.run_a_cycle();
 				tree.run_a_cycle();
@@ -136,7 +123,9 @@ int main(int argc, char** argv)
 				tree.run_a_cycle();
 				tree.run_a_cycle();
 				simulationFinishedCnt +=10;
+
 				e=clock();
+				
 				if(simulationFinishedCnt %10000==0)
 				{
 					tree.show_path();
@@ -149,7 +138,7 @@ int main(int argc, char** argv)
 			tree.root ->show_child();
 			value = tree.root ->show_inf(k);
 			cerr<<"simulation time : "<< (double)(e-st) / 1000.0<<endl;
-			cerr<<"average deep : "<<(double)tree.total / (double)i<<endl;
+			//cerr<<"average deep : "<<(double)tree.total / (double)i<<endl;
 			cerr<<"total node : "<< tree.totalnode<<endl;
 			cerr<<"average speed : "<< (simulationFinishedCnt*1000) / (e-st) <<endl;
 			tree.show_path();
@@ -162,12 +151,7 @@ int main(int argc, char** argv)
 			{
 				cout<<"=resign"<<endl<<endl;
 			}
-			if(action1 == -1){
-        action1 = best_move;
-      }else{
-        action2 = action1;
-        action1 = best_move;
-      }
+			
 			//tree.clear();
 
 		}
@@ -208,8 +192,7 @@ int main(int argc, char** argv)
 		}
 		else if(s== "name")
 		{
-			cout<<"=haha"<<UCB_WEIGHT * 100<<"init_v_"<<initial_v<<"\n\n";
-			//cout<<"=haha"<< UCB_WEIGHT * 100<<"_rn"<<ravenum<<"_bn"<<initial_v << "\n\n";
+			cout<<"=haha"<< UCB_WEIGHT * 100<<"_rn"<<initial_rave_v<<"_bn"<<initial_v << "\n\n";
 		}else if(s== "time")
 		{
 			cin>>t;
