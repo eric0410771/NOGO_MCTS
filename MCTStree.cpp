@@ -3,7 +3,8 @@
 double MCTStree::getvalue( ucbnode* nodeptr, int child_index)
 {
 	ucbnode *tmp = (nodeptr->childptrs) + child_index;
-	return tmp->mean + UCB_WEIGHT * sqrt(nodeptr->logc / (tmp->count + 1));
+	//return tmp->mean + UCB_WEIGHT * sqrt(nodeptr->logc / (tmp->count + 1));
+	return (tmp->mean * tmp->count + tmp->ravemean *tmp -> ravecount + sqrt(nodeptr->logc * tmp -> count) * UCB_WEIGHT)/ (tmp->count + tmp->ravecount);
 }
 
 ucbnode* MCTStree::get_best_child(ucbnode* nodeptr)
@@ -73,6 +74,22 @@ void MCTStree::update(double result,board& b)
 	for(int i=0;i<path.size();i++)
 	{
 		path[i]->update_node(result);
+
+		if(path[i] -> player == BLACK){
+			for(int j = 0; j < b.wpsize; j++){
+				int k = (path[i]->legal_action[b.wpath[j]]);
+				if ( k != -1){
+					((path[i]->childptrs)+k)->update_rave_node(result);
+				}
+			}
+		}else{
+			for(int j = 0; j < b.bpsize; j++){
+				int k = (path[i]->legal_action[b.bpath[j]]);
+				if (k != -1){
+					((path[i]->childptrs)+k)->update_rave_node(result);
+				}
+			}
+		}
 	}
 }
 void MCTStree::run_a_cycle()
@@ -83,7 +100,7 @@ void MCTStree::run_a_cycle()
 
 	if(last_node.num_child==0 && last_node.count > initial_v )
 	{
-		last_node.expansion(b);
+		last_node.expansion(b, rave_num, rave_wnum);
 		if(last_node.num_child!=0)
 		{
 			ucbnode * next_node = get_best_child(&last_node);
@@ -160,7 +177,7 @@ void MCTStree::reset(board &b)
 	root -> count = initial_v;
 	root -> logc = 1;
 	memset(root -> legal_action,-1,sizeof(root -> legal_action)  );
-	root-> expansion(b);
+	root-> expansion(b, rave_num, rave_wnum);
 	totalnode =0;
 }
 

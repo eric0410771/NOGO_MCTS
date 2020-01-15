@@ -21,9 +21,13 @@ public:
 	double mean; 
 	double logc;
 
-	void init_node(int i,bool j);
+	double ravecount;
+	double ravemean;
+
+	void init_node(int i,bool j, double ravemean, double ravecount);
 	void update_node(double result);
-	void expansion(board &b);
+	void update_rave_node(double result);	
+	void expansion(board &b, double rave_num[2][BOARDSSIZE], double rave_wnum[2][BOARDSSIZE]);
 	int get_best_child_index();
 	vector<float> return_values();
 

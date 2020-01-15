@@ -9,6 +9,10 @@ public:
 	ucbnode* root;
 	board rboard;
         
+
+	double rave_num[2][BOARDSSIZE];
+	double rave_wnum[2][BOARDSSIZE];
+	
         vector<ucbnode*> path;
 	int bsize,wsize,tsize;
 	int bone[BOARDSSIZE],wone[BOARDSSIZE],two[BOARDSSIZE];
